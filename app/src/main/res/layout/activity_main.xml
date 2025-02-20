@@ -33,7 +33,7 @@
         app:title="아기 상태"
         app:titleTextColor="#000000">
 
-        <!-- 메뉴 버튼 -->
+        <!-- 메뉴 버튼 (기존 코드) -->
         <ImageButton
             android:id="@+id/btnMenu"
             android:layout_width="48dp"
@@ -45,6 +45,20 @@
             android:scaleType="centerInside"
             android:src="@drawable/menu_send" />
     </androidx.appcompat.widget.Toolbar>
+
+    <!-- GuardBed designation 표시용 TextView -->
+    <TextView
+        android:id="@+id/tvDesignation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        app:layout_constraintTop_toBottomOf="@id/toolbarMain"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp" />
 
     <!-- 중앙 아기 상태 이미지 -->
     <ImageView

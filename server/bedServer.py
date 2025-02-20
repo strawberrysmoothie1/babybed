@@ -186,6 +186,30 @@ def logout():
     else:
         return jsonify({"success": False, "message": f"{gdID}에 대해 실행 중인 알림 스케줄러가 없습니다."}), 400
 
+@app.route('/api/getGuardBed', methods=['POST'])
+def get_guardbed():
+    data = request.get_json()
+    gdID = data.get('gdID')
+    if not gdID:
+        return jsonify({"success": False, "message": "gdID 누락"}), 400
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        sql = "SELECT designation FROM GuardBed WHERE GdID=%s"
+        cursor.execute(sql, (gdID,))
+        row = cursor.fetchone()
+        if row:
+            designation = row[0]
+            return jsonify({"success": True, "designation": designation}), 200
+        else:
+            return jsonify({"success": False, "message": "해당 gdID에 해당하는 침대 정보가 없습니다."}), 404
+    except Exception as e:
+        return jsonify({"success": False, "message": "서버 오류: " + str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+        
 if __name__ == '__main__':
     print_bedinfo_on_startup()
     app.run(host='0.0.0.0', port=5000, debug=True)
