@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <!-- 전체 배경 이미지 -->
+    <ImageView
+        android:id="@+id/imgBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_gradient"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 상단 툴바 -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarMain"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:drawable/editbox_background"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:title="아기 상태"
+        app:titleTextColor="#000000">
+
+        <!-- 메뉴 버튼 -->
+        <ImageButton
+            android:id="@+id/btnMenu"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="메뉴 버튼"
+            android:scaleType="centerInside"
+            android:src="@drawable/menu_send" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- 중앙 아기 상태 이미지 -->
+    <ImageView
+        android:id="@+id/ivBabyState"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_marginTop="130dp"
+        android:contentDescription="아기 상태 이미지"
+        android:src="@drawable/baby_active"
+        app:layout_constraintTop_toBottomOf="@id/toolbarMain"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 상태 텍스트 -->
+    <TextView
+        android:id="@+id/tvBabyStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="아기가 움직이고 있어요"
+        android:fontFamily="@font/my_custom_font"
+        android:textColor="#000000"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/ivBabyState"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 하단 버튼 그룹 -->
+    <LinearLayout
+        android:id="@+id/layoutBottomButtons"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="70dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/btnRealTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="실시간 영상"
+            android:layout_marginEnd="16dp" />
+
+        <Button
+            android:id="@+id/btnStatistics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="활동 통계"
+            android:layout_marginEnd="16dp" />
+
+        <Button
+            android:id="@+id/btnEventLog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이벤트 로그" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

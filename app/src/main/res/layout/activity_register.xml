@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_register"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegisterActivity">
+
+    <!-- 상단 Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarRegister"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:drawable/editbox_background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:title="회원가입"
+        app:navigationIcon="@drawable/baseline_arrow_back_24"
+        app:titleTextColor="@color/black" />
+
+    <!-- (1) 아이디 + 중복확인 -->
+    <LinearLayout
+        android:id="@+id/layout_id_check"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbarRegister"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.6">
+
+        <EditText
+            android:id="@+id/etRegisterId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="아이디"
+            android:inputType="text"
+            android:gravity="start|center_vertical"
+            android:padding="12dp" />
+
+        <Button
+            android:id="@+id/btnCheckId"
+            android:layout_width="67dp"
+            android:layout_height="51dp"
+            android:layout_marginLeft="8dp"
+            android:padding="4dp"
+            android:text="중복확인"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <!-- (2) 비밀번호 -->
+    <EditText
+        android:id="@+id/etRegisterPassword"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="비밀번호"
+        android:inputType="textPassword"
+        android:gravity="start|center_vertical"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/layout_id_check"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.6" />
+
+    <!-- 비밀번호 확인 입력란 -->
+    <EditText
+        android:id="@+id/etRegisterPasswordConfirm"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="비밀번호 확인"
+        android:inputType="textPassword"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/etRegisterPassword"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.6" />
+
+    <!-- 오류 메시지 출력용 텍스트뷰 -->
+    <TextView
+        android:id="@+id/tvErrorMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FF0000"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/etRegisterPasswordConfirm"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- (5) 회원가입 버튼 -->
+    <Button
+        android:id="@+id/btnRegisterSubmit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="회원가입"
+        app:layout_constraintTop_toBottomOf="@id/tvErrorMessage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

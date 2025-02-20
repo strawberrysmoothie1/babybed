@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "124184423425",
+    "project_id": "babybed-b6356",
+    "storage_bucket": "babybed-b6356.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:124184423425:android:6c9ff5ee76f5bbed99e400",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4AfxbktsX8kuC0vVaqIGt-QZQTcWJhOI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
