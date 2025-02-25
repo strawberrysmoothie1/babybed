@@ -1,4 +1,3 @@
-# bedServer.py
 from flask import Flask, request, jsonify
 import pymysql
 from datetime import datetime
@@ -146,7 +145,6 @@ def send_registration_congrats(token, userId):
     except Exception as e:
         print("푸시 전송 실패:", e)
 
-
 @app.route('/api/checkDuplicate', methods=['POST'])
 def check_duplicate():
     data = request.get_json()
@@ -160,17 +158,15 @@ def check_duplicate():
         cursor.execute(sql, (gdID,))
         result = cursor.fetchone()
         if result:
-            # 아이디가 이미 존재하면 사용 불가능 (409 Conflict)
-            return jsonify({"success": False, "available": False, "message": "이미 존재하는 아이디입니다."}), 409
+            # 중복된 경우에도 200 상태 코드를 반환하고, available 값을 false로 전달
+            return jsonify({"success": True, "available": False, "message": "이미 존재하는 아이디입니다."}), 200
         else:
-            # 아이디가 없으면 사용 가능 (200 OK)
             return jsonify({"success": True, "available": True, "message": "사용 가능한 아이디입니다."}), 200
     except Exception as e:
         return jsonify({"success": False, "message": "서버 오류: " + str(e)}), 500
     finally:
         cursor.close()
         conn.close()
-
 
 
 @app.route('/api/logout', methods=['POST'])
@@ -186,30 +182,42 @@ def logout():
     else:
         return jsonify({"success": False, "message": f"{gdID}에 대해 실행 중인 알림 스케줄러가 없습니다."}), 400
 
-@app.route('/api/getGuardBed', methods=['POST'])
-def get_guardbed():
+
+
+@app.route('/api/checkMyBed', methods=['POST'])
+def check_my_bed():
     data = request.get_json()
     gdID = data.get('gdID')
+    print("check_my_bed gdID:", gdID)  # 로그 추가
     if not gdID:
         return jsonify({"success": False, "message": "gdID 누락"}), 400
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        sql = "SELECT designation FROM GuardBed WHERE GdID=%s"
+        sql = """
+            SELECT GdID, bedID, designation, DATE_FORMAT(period, '%%Y-%%m-%%d') as period, CAST(bed_order AS CHAR) as bed_order 
+            FROM GuardBed 
+            WHERE GdID=%s 
+            ORDER BY bed_order ASC
+        """
+        print("Executing SQL:", sql, "with parameter:", gdID)
         cursor.execute(sql, (gdID,))
-        row = cursor.fetchone()
-        if row:
-            designation = row[0]
-            return jsonify({"success": True, "designation": designation}), 200
-        else:
-            return jsonify({"success": False, "message": "해당 gdID에 해당하는 침대 정보가 없습니다."}), 404
+        rows = cursor.fetchall()
+        print("Raw rows fetched:", rows)
+        bedInfo = [list(row) for row in rows]
+        for row in bedInfo:
+            print("Row:", row)
+        return jsonify({"success": True, "bedInfo": bedInfo}), 200
     except Exception as e:
+        print("Exception in check_my_bed:", e)
         return jsonify({"success": False, "message": "서버 오류: " + str(e)}), 500
     finally:
         cursor.close()
         conn.close()
 
-        
+
+
+
 if __name__ == '__main__':
     print_bedinfo_on_startup()
     app.run(host='0.0.0.0', port=5000, debug=True)

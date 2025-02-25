@@ -3,23 +3,76 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_addbed"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AddBedActivity">
 
-    <!-- 상단 제목 텍스트 -->
+    <!-- 전체 배경 이미지 -->
+    <ImageView
+        android:id="@+id/imgBackgroundAddBed"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_toy"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 상단 툴바 -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarAddBed"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:drawable/editbox_background"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:title="침대 선택"
+        app:titleTextColor="#000000"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- 툴바 우측에 메뉴 버튼 추가 -->
+        <ImageButton
+            android:id="@+id/btnMenuAddBed"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="메뉴 버튼"
+            android:scaleType="centerInside"
+            android:src="@drawable/menu_send" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- RecyclerView로 침대 버튼들을 표시 -->
+
+    <!-- 안내 텍스트: 데이터가 없을 때 "침대추가" 메시지를 표시 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewBeds"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="188dp"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarAddBed" />
+
     <TextView
-        android:id="@+id/tvAddBedTitle"
+        android:id="@+id/tvAddBedInstruction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="침대 추가 화면"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
+        android:text="침대 정보를 입력하세요."
+        android:textSize="18sp"
+        android:textColor="#FFFFFF"
+        app:layout_constraintTop_toBottomOf="@id/recyclerViewBeds"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"/>
 
-    <!-- 필요한 다른 UI 요소들을 여기에 추가 (예: 침대 정보 입력 필드 등) -->
+    <!-- 추가 UI 요소 배치 가능 -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

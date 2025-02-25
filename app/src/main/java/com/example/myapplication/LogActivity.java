@@ -12,6 +12,7 @@ import com.example.myapplication.Login_network.LoginClient;
 import com.example.myapplication.Login_network.LoginRequest;
 import com.example.myapplication.Login_network.LoginResponse;
 import com.example.myapplication.Login_network.LoginService;
+import java.util.HashMap;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,15 +40,6 @@ public class LogActivity extends AppCompatActivity {
         // SharedPreferences 초기화
         preferences = getSharedPreferences("AutoLogin", MODE_PRIVATE);
 
-        // 자동 로그인 체크
-        if (preferences.getBoolean("autoLogin", false)) {
-            String savedId = preferences.getString("id", "");
-            if (!savedId.isEmpty()) {
-                Toast.makeText(this, "자동 로그인 중...", Toast.LENGTH_SHORT).show();
-                navigateToMain();
-            }
-        }
-
         // 로그인 버튼 클릭 이벤트
         btnLogin.setOnClickListener(view -> {
             String id = etId.getText().toString().trim();
@@ -58,7 +50,7 @@ public class LogActivity extends AppCompatActivity {
                 return;
             }
 
-            // 자동 로그인 여부를 체크박스에서 가져와 LoginRequest에 포함시킵니다.
+            // 로그인 요청 (자동 로그인 여부 포함)
             LoginRequest request = new LoginRequest(id, password, cbAutoLogin.isChecked());
             Call<LoginResponse> call = loginService.login(request);
             call.enqueue(new Callback<LoginResponse>() {
@@ -67,11 +59,9 @@ public class LogActivity extends AppCompatActivity {
                     if (response.isSuccessful() && response.body() != null) {
                         LoginResponse result = response.body();
                         if (result.isSuccess()) {
-                            handleLoginSuccess(id, cbAutoLogin.isChecked());
-                            Toast.makeText(LogActivity.this, "로그인 성공!", Toast.LENGTH_SHORT).show();
-
-                            // 자동 로그인 설정 저장
+                            // 자동 로그인 설정 저장 및 SharedPreferences 업데이트
                             SharedPreferences.Editor editor = preferences.edit();
+                            editor.putString("lastLoggedInId", id);
                             if (cbAutoLogin.isChecked()) {
                                 editor.putBoolean("autoLogin", true);
                                 editor.putString("id", id);
@@ -81,7 +71,9 @@ public class LogActivity extends AppCompatActivity {
                             }
                             editor.apply();
 
-                            navigateToMain();
+                            Toast.makeText(LogActivity.this, "로그인 성공!", Toast.LENGTH_SHORT).show();
+                            // 로그인 성공하면 바로 AddBedActivity로 이동
+                            navigateToAddBed();
                         } else {
                             Toast.makeText(LogActivity.this, result.getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -110,22 +102,8 @@ public class LogActivity extends AppCompatActivity {
         });
     }
 
-    private void handleLoginSuccess(String id, boolean autoLoginChecked) {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("lastLoggedInId", id);
-        if (autoLoginChecked) {
-            editor.putBoolean("autoLogin", true);
-            editor.putString("id", id);
-        } else {
-            editor.putBoolean("autoLogin", false);
-            editor.remove("id");
-        }
-        editor.apply();
-        navigateToMain();
-    }
-
-    private void navigateToMain() {
-        Intent intent = new Intent(LogActivity.this, MainActivity.class);
+    private void navigateToAddBed() {
+        Intent intent = new Intent(LogActivity.this, AddBedActivity.class);
         startActivity(intent);
         finish();
     }

@@ -10,14 +10,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myapplication.Login_network.GuardBedResponse;
 import com.example.myapplication.Login_network.LoginClient;
 import com.example.myapplication.Login_network.LoginService;
 import com.example.myapplication.Login_network.LogoutRequest;
 import com.example.myapplication.Login_network.LogoutResponse;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,37 +31,14 @@ public class MainActivity extends AppCompatActivity {
         preferences = getSharedPreferences("AutoLogin", MODE_PRIVATE);
         loginService = LoginClient.getClient("http://10.0.2.2:5000/").create(LoginService.class);
 
-        // GuardBed 정보 조회
-        String userId = preferences.getString("id", "");
-        Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("gdID", userId);
-
-        loginService.getGuardBed(requestBody).enqueue(new Callback<GuardBedResponse>() {
-            @Override
-            public void onResponse(Call<GuardBedResponse> call, Response<GuardBedResponse> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    // 해당 사용자의 GuardBed 레코드가 있으면 designation 값을 표시
-                    String designation = response.body().getDesignation();
-                    TextView tvDesignation = findViewById(R.id.tvDesignation);
-                    tvDesignation.setText(designation);
-                } else {
-                    // GuardBed 레코드가 없으면 addbed 화면으로 이동
-                    Intent intent = new Intent(MainActivity.this, AddBedActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-            @Override
-            public void onFailure(Call<GuardBedResponse> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "GuardBed 조회 실패: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-
-
-
-
+        // (선택 사항) 이전 로그인 시 GuardBed API에서 받아온 designation 값을 SharedPreferences나 Intent extras에 저장했을 경우 표시
+        String designation = preferences.getString("designation", "");
+        TextView tvDesignation = findViewById(R.id.tvDesignation);
+        if (!designation.isEmpty()) {
+            tvDesignation.setText(designation);
+        } else {
+            tvDesignation.setText("환영합니다!");
+        }
 
         // 메뉴 버튼 설정
         ImageButton btnMenu = findViewById(R.id.btnMenu);
@@ -93,12 +66,9 @@ public class MainActivity extends AppCompatActivity {
         btnEventLog.setOnClickListener(view ->
                 Toast.makeText(this, "이벤트 로그 준비 중입니다.", Toast.LENGTH_SHORT).show()
         );
-
-        loginService = LoginClient.getClient("http://10.0.2.2:5000/").create(LoginService.class);
     }
 
     private void logout() {
-        // 1. SharedPreferences에서 사용자 아이디 읽기
         String userId = preferences.getString("id", "");
         if (userId.isEmpty()) {
             Toast.makeText(MainActivity.this, "저장된 사용자 정보가 없습니다.", Toast.LENGTH_SHORT).show();
@@ -108,23 +78,20 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // 2. 로그아웃 API 호출
         LogoutRequest logoutRequest = new LogoutRequest(userId);
         Call<LogoutResponse> call = loginService.logout(logoutRequest);
         call.enqueue(new Callback<LogoutResponse>() {
             @Override
             public void onResponse(Call<LogoutResponse> call, Response<LogoutResponse> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     Toast.makeText(MainActivity.this, "로그아웃되었습니다.", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(MainActivity.this, "서버 오류: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
-                // 3. API 호출 후 SharedPreferences 정리
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putBoolean("autoLogin", false);
                 editor.remove("id");
                 editor.apply();
-                // 4. 로그인 화면으로 이동
                 Intent intent = new Intent(MainActivity.this, LogActivity.class);
                 startActivity(intent);
                 finish();

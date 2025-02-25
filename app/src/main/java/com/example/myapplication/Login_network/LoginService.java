@@ -25,8 +25,7 @@ public interface LoginService {
     @POST("/api/checkDuplicate")
     Call<RegisterActivity.CheckDuplicateResponse> checkDuplicate(@Body Map<String, String> body);
 
-    @POST("/api/getGuardBed")
-    Call<GuardBedResponse> getGuardBed(@Body Map<String, String> body);
-
+    @POST("/api/checkMyBed")
+    Call<CheckMyBedResponse> checkMyBed(@Body Map<String, String> body);
 
 }

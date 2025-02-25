@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bedItemLayout"
+    android:layout_width="160dp"
+    android:layout_height="160dp"
+    android:orientation="vertical"
+    android:gravity="center_horizontal|center_vertical"
+    android:background="@drawable/bed_button_background"
+    android:padding="8dp">
+
+    <!-- 명칭은 상단에 고정 -->
+    <TextView
+        android:id="@+id/tvDesignation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Designation"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="top|center_horizontal"
+        android:layout_weight="1"/>
+
+    <!-- 임시 보호기간은 하단에 고정 (없으면 빈 문자열) -->
+    <TextView
+        android:id="@+id/tvPeriod"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:text=""
+        android:textSize="14sp"
+        android:gravity="bottom|center_horizontal"
+        android:layout_weight="1"/>
+</LinearLayout>

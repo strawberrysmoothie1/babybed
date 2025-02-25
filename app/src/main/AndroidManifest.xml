@@ -34,6 +34,11 @@
             android:name=".MainActivity"
             android:exported="true" />
 
+        <!-- 침대 추가 화면 -->
+        <activity
+            android:name=".AddBedActivity"
+            android:exported="true" />
+
 
     </application>
 </manifest>
