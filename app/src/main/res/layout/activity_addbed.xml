@@ -27,13 +27,14 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@android:drawable/editbox_background"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:fontFamily="@font/hakgyoansim_geurimilgi"
         app:title="침대 선택"
         app:titleTextColor="#000000"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- 툴바 우측에 메뉴 버튼 추가 -->
+        <!-- 툴바 우측 메뉴 버튼 -->
         <ImageButton
             android:id="@+id/btnMenuAddBed"
             android:layout_width="48dp"
@@ -46,21 +47,76 @@
             android:src="@drawable/menu_send" />
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- RecyclerView로 침대 버튼들을 표시 -->
-
-    <!-- 안내 텍스트: 데이터가 없을 때 "침대추가" 메시지를 표시 -->
+    <!-- RecyclerView: 침대 버튼들을 가로로 표시 -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewBeds"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="188dp"
         android:clipToPadding="false"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@id/toolbarAddBed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbarAddBed" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="horizontal" />
 
+    <!-- 고정 정보 프레임: RecyclerView 아래에 고정, 배경을 @drawable/signs로 설정 -->
+    <LinearLayout
+        android:id="@+id/fixedInfoFrame"
+        android:layout_width="350dp"
+        android:layout_height="125dp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/signs"
+        android:orientation="vertical"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recyclerViewBeds">
+
+        <!-- 역할 표시: 임시보호자인 경우 "임시보호침대"를 붉은색으로, 기본은 숨김 -->
+        <TextView
+            android:id="@+id/tvRoleIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginStart="120dp"
+            android:fontFamily="@font/hakgyoansim_geurimilgi"
+            android:gravity="start"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <!-- 보호자/임시보호자 수 -->
+        <TextView
+            android:id="@+id/tvInfoCounts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="120dp"
+            android:fontFamily="@font/hakgyoansim_geurimilgi"
+            android:gravity="start"
+            android:text="보호자: 0/0\n임시보호자: 0/0"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+        <!-- 추가 정보: 보호자라면 일련번호, 임시보호자라면 임시보호까지 남은 일수 -->
+        <TextView
+            android:id="@+id/tvInfoAdditional"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="120dp"
+            android:fontFamily="@font/hakgyoansim_geurimilgi"
+            android:gravity="start"
+            android:text=""
+            android:textColor="#000000"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+
+
+    <!-- 안내 텍스트 (데이터 없을 시) -->
     <TextView
         android:id="@+id/tvAddBedInstruction"
         android:layout_width="wrap_content"
@@ -68,11 +124,10 @@
         android:text="침대 정보를 입력하세요."
         android:textSize="18sp"
         android:textColor="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/recyclerViewBeds"
+        app:layout_constraintTop_toBottomOf="@id/fixedInfoFrame"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"/>
 
-    <!-- 추가 UI 요소 배치 가능 -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

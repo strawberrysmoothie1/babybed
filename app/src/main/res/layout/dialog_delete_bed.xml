@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tvDeleteMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/hakgyoansim_geurimilgi"
+        android:text="현재 관리중인 침대와 이 기기와의 연결을 삭제합니다.\n삭제하실려면 계정의 비밀번호를 입력하세요."
+        android:textSize="15sp" />
+
+    <EditText
+        android:id="@+id/etDeletePassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/hakgyoansim_geurimilgi"
+        android:hint="비밀번호 입력"
+        android:inputType="textPassword"
+        android:layout_marginTop="8dp" />
+</LinearLayout>

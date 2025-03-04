@@ -28,4 +28,16 @@ public interface LoginService {
     @POST("/api/checkMyBed")
     Call<CheckMyBedResponse> checkMyBed(@Body Map<String, String> body);
 
+    @POST("/api/checkBedInfo")
+    Call<CheckBedInfoResponse> checkBedInfo(@Body Map<String, String> body);
+
+    @POST("/api/addGuardBed")
+    Call<AddGuardBedResponse> addGuardBed(@Body Map<String, String> body);
+
+    @POST("/api/deleteBed")
+    Call<Void> deleteBed(@Body Map<String, String> body);
+
+    @POST("/api/calcBedCounts")
+    Call<CalcBedCountsResponse> calcBedCounts(@Body Map<String, String> body);
+
 }

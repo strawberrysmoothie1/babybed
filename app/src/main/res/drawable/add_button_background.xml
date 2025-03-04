@@ -1,4 +1,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#E9DEC2" />  <!-- 원하는 배경색으로 변경 -->
+    <solid android:color="#FF03DAC5" />
+
     <corners android:radius="8dp" />
 </shape>

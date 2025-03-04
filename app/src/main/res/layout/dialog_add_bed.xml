@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- 일련번호 입력란 -->
+    <EditText
+        android:id="@+id/etBedSerial"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/hakgyoansim_geurimilgi"
+        android:hint="일련번호 입력"
+        android:inputType="text" />
+
+    <!-- 침대 명칭 입력란: 초기에는 GONE -->
+    <EditText
+        android:id="@+id/etBedDesignation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/hakgyoansim_geurimilgi"
+        android:hint="침대 명칭 입력"
+        android:inputType="text"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"/>
+</LinearLayout>

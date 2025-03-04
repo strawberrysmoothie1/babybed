@@ -1,33 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/bedItemLayout"
-    android:layout_width="160dp"
-    android:layout_height="160dp"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bedItemContainer"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:gravity="center_horizontal|center_vertical"
-    android:background="@drawable/bed_button_background"
-    android:padding="8dp">
+    android:gravity="center_horizontal"
+    android:padding="4dp">
 
-    <!-- 명칭은 상단에 고정 -->
-    <TextView
-        android:id="@+id/tvDesignation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Designation"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="top|center_horizontal"
-        android:layout_weight="1"/>
+    <!-- 침대 버튼 영역 (상단, 160dp × 160dp) -->
+    <FrameLayout
+        android:id="@+id/bedButtonArea"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:background="@drawable/bed_button_background"
+        android:padding="8dp">
 
-    <!-- 임시 보호기간은 하단에 고정 (없으면 빈 문자열) -->
-    <TextView
-        android:id="@+id/tvPeriod"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:text=""
-        android:textSize="14sp"
-        android:gravity="bottom|center_horizontal"
-        android:layout_weight="1"/>
+        <!-- 내부: 상단에 designation 텍스트, 나머지 영역에 이미지 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvDesignation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Designation"
+                android:fontFamily="@font/hakgyoansim_geurimilgi"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:gravity="center_horizontal" />
+
+            <ImageView
+                android:id="@+id/ivBedImage"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:scaleType="centerCrop" />
+        </LinearLayout>
+
+        <!-- 우측 상단에 별도의 설정 버튼 -->
+        <ImageButton
+            android:id="@+id/btnSetting"
+            android:layout_width="7dp"
+            android:layout_height="17dp"
+            android:layout_gravity="top"
+            android:layout_margin="1dp"
+            android:background="@drawable/setting_dot"
+            android:contentDescription="설정" />
+    </FrameLayout>
+
 </LinearLayout>

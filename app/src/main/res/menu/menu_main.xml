@@ -6,5 +6,5 @@
 
     <item
         android:id="@+id/menu_account"
-        android:title="계정 관리" />
+        android:title="설정" />
 </menu>

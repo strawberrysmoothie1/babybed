@@ -27,6 +27,16 @@ public class LogActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log);
 
+        preferences = getSharedPreferences("AutoLogin", MODE_PRIVATE);
+        // 자동로그인 체크: autoLogin 플래그와 "id"가 저장되어 있으면 바로 다음 화면으로 이동
+        if (preferences.getBoolean("autoLogin", false)) {
+            String savedId = preferences.getString("id", "");
+            if (!savedId.isEmpty()) {
+                Toast.makeText(this, "자동 로그인 중...", Toast.LENGTH_SHORT).show();
+                navigateToAddBed();
+                return;  // 로그인 화면을 더 이상 표시하지 않음
+            }
+        }
         // View 요소
         EditText etId = findViewById(R.id.etId);
         EditText etPassword = findViewById(R.id.etPassword);
