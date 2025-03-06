@@ -25,6 +25,8 @@ import com.example.myapplication.Login_network.LoginClient;
 import com.example.myapplication.Login_network.LoginService;
 import com.example.myapplication.Login_network.LogoutRequest;
 import com.example.myapplication.Login_network.LogoutResponse;
+import com.example.myapplication.Login_network.PendingRequest;
+import com.example.myapplication.Login_network.PendingRequestsResponse;
 import com.example.myapplication.item.BedAdapter;
 import com.example.myapplication.model.BedCount;
 import com.example.myapplication.model.BedDisplay;
@@ -111,6 +113,7 @@ public class AddBedActivity extends AppCompatActivity {
                     }
                 }
             }
+
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 int centerX = recyclerView.getWidth() / 2;
@@ -118,7 +121,8 @@ public class AddBedActivity extends AppCompatActivity {
                     int childCenterX = (recyclerView.getChildAt(i).getLeft() + recyclerView.getChildAt(i).getRight()) / 2;
                     int distanceFromCenter = Math.abs(centerX - childCenterX);
                     float scale = 1.0f - (distanceFromCenter / (float) centerX) * 0.5f;
-                    if (scale < 0.5f) scale = 0.5f;
+                    if (scale < 0.5f)
+                        scale = 0.5f;
                     recyclerView.getChildAt(i).setScaleX(scale);
                     recyclerView.getChildAt(i).setScaleY(scale);
                 }
@@ -157,6 +161,7 @@ public class AddBedActivity extends AppCompatActivity {
                     tvAddBedInstruction.setText("침대추가");
                 }
             }
+
             @Override
             public void onFailure(Call<CheckMyBedResponse> call, Throwable t) {
                 tvAddBedInstruction.setText("침대추가");
@@ -164,7 +169,7 @@ public class AddBedActivity extends AppCompatActivity {
             }
         });
 
-        // 새 calcBedCounts 호출 (백엔드에서는 GdID를 무시함)
+        // calcBedCounts 호출 (백엔드에서는 GdID를 무시)
         Map<String, String> calcRequest = new HashMap<>();
         calcRequest.put("gdID", userId);
         loginService.calcBedCounts(calcRequest).enqueue(new Callback<CalcBedCountsResponse>() {
@@ -176,18 +181,57 @@ public class AddBedActivity extends AppCompatActivity {
                     Toast.makeText(AddBedActivity.this, "calcBedCounts 호출 실패", Toast.LENGTH_SHORT).show();
                 }
             }
+
             @Override
             public void onFailure(Call<CalcBedCountsResponse> call, Throwable t) {
                 Toast.makeText(AddBedActivity.this, "calcBedCounts 네트워크 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        // pending 임시보호 요청 확인 (designation 값이 null 인 튜플)
+        checkPendingTempGuardianRequests(userId);
     }
 
-    // rawData를 BedDisplay 객체 리스트로 그룹화 (checkMyBed 응답을 기반으로)
+    // pending 요청 확인 메서드
+    private void checkPendingTempGuardianRequests(String ownerId) {
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("ownerId", ownerId);
+        loginService.getPendingTempGuardianRequests(requestBody).enqueue(new Callback<PendingRequestsResponse>() {
+            @Override
+            public void onResponse(Call<PendingRequestsResponse> call, Response<PendingRequestsResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    List<PendingRequest> requests = response.body().getRequests();
+                    if (requests.isEmpty()) {
+                        return; // 요청이 없으면 아무것도 하지 않음.
+                    }
+                    // 각 pending 요청에 대해 AlertDialog로 메시지 표시
+                    for (PendingRequest req : requests) {
+                        String message = req.getBedID() + " 침대 보호자가 회원님을 "
+                                + req.getPeriod() + " 까지 임시보호 요청을 하였습니다!";
+                        new AlertDialog.Builder(AddBedActivity.this)
+                                .setTitle("임시보호 요청")
+                                .setMessage(message)
+                                .setPositiveButton("확인", null)
+                                .show();
+                    }
+                } else {
+                    Toast.makeText(AddBedActivity.this, "임시보호 요청 확인 실패", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PendingRequestsResponse> call, Throwable t) {
+                Toast.makeText(AddBedActivity.this, "네트워크 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // rawData를 BedDisplay 객체 리스트로 그룹화 (checkMyBed 응답 기반)
     private List<BedDisplay> groupBedData(List<List<String>> rawData, String currentUserId) {
         Map<String, List<List<String>>> groupMap = new HashMap<>();
         if (rawData != null) {
             for (List<String> row : rawData) {
+                // row.get(1)은 bedID
                 String bedID = row.get(1);
                 if (!groupMap.containsKey(bedID)) {
                     groupMap.put(bedID, new ArrayList<>());
@@ -195,6 +239,7 @@ public class AddBedActivity extends AppCompatActivity {
                 groupMap.get(bedID).add(row);
             }
         }
+
         List<BedDisplay> list = new ArrayList<>();
         DateTimeFormatter formatter = null;
         LocalDate today = null;
@@ -202,6 +247,8 @@ public class AddBedActivity extends AppCompatActivity {
             formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             today = LocalDate.now();
         }
+
+        // 각 그룹별로 보호자, 임시보호자 수를 계산하고, bed_order 값을 읽어오기
         for (String bedID : groupMap.keySet()) {
             List<List<String>> groupRows = groupMap.get(bedID);
             int guardianCount = 0;
@@ -211,6 +258,12 @@ public class AddBedActivity extends AppCompatActivity {
             String serialNumber = groupRows.get(0).get(5);
             String periodForDisplay = "";
             int remainingDays = 0;
+            int bedOrder = 0;
+            try {
+                bedOrder = Integer.parseInt(groupRows.get(0).get(4));
+            } catch (Exception e) {
+                bedOrder = 0;
+            }
             for (List<String> row : groupRows) {
                 String period = row.get(3);
                 if (period == null || period.isEmpty() || period.equalsIgnoreCase("null")) {
@@ -239,10 +292,21 @@ public class AddBedActivity extends AppCompatActivity {
                     }
                 }
             }
-            list.add(new BedDisplay(bedID, designation, guardianCount, tempCount, userRole, serialNumber, periodForDisplay, remainingDays));
+            // 만약 designation이 null이면(요청중인 상태) 해당 침대는 목록에 보이지 않도록 처리
+            if (designation == null) {
+                // 여기서는 리스트에 추가하지 않음.
+                continue;
+            }
+            list.add(new BedDisplay(bedID, designation, guardianCount, tempCount, userRole,
+                    serialNumber, periodForDisplay, remainingDays, bedOrder));
         }
-        // 마지막에 항상 "침대추가" 항목 추가
-        list.add(new BedDisplay("", "침대추가", 0, 0, "", "", "", 0));
+
+        // bed_order 값에 따라 오름차순 정렬 (버튼이 순서대로 보이도록)
+        list.sort((b1, b2) -> Integer.compare(b1.getBedOrder(), b2.getBedOrder()));
+
+        // 마지막에 항상 "침대추가" 항목 추가 (bed_order는 0으로 처리)
+        list.add(new BedDisplay("", "침대추가", 0, 0, "", "", "", 0, 0));
+
         return list;
     }
 
@@ -305,6 +369,25 @@ public class AddBedActivity extends AppCompatActivity {
         }
     }
 
+    // 터치한 아이템을 중앙으로 스크롤하는 기능
+    public void scrollToPosition(int position) {
+        int currentPos = getCurrentCenteredPosition();
+        if (position != currentPos) {
+            recyclerViewBeds.smoothScrollToPosition(position);
+        }
+    }
+
+    // 현재 중앙에 위치한 아이템의 position 반환
+    private int getCurrentCenteredPosition() {
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerViewBeds.getLayoutManager();
+        LinearSnapHelper snapHelper = new LinearSnapHelper();
+        View centerView = snapHelper.findSnapView(layoutManager);
+        if (centerView != null) {
+            return layoutManager.getPosition(centerView);
+        }
+        return -1;
+    }
+
     private void logout() {
         String userId = preferences.getString("id", "");
         if (userId.isEmpty()) {
@@ -330,6 +413,7 @@ public class AddBedActivity extends AppCompatActivity {
                 startActivity(new Intent(AddBedActivity.this, LogActivity.class));
                 finish();
             }
+
             @Override
             public void onFailure(Call<LogoutResponse> call, Throwable t) {
                 Toast.makeText(AddBedActivity.this, "네트워크 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();

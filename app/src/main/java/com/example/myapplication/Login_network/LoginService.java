@@ -40,4 +40,11 @@ public interface LoginService {
     @POST("/api/calcBedCounts")
     Call<CalcBedCountsResponse> calcBedCounts(@Body Map<String, String> body);
 
+    @POST("/api/checkGuardBed")
+    Call<CheckGuardBedResponse> checkGuardBed(@Body Map<String, String> checkRequest);
+
+    @POST("/api/getPendingTempGuardianRequests")
+    Call<PendingRequestsResponse> getPendingTempGuardianRequests(@Body Map<String, String> body);
+
+
 }
